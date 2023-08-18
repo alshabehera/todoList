@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+</head>
+<link rel="stylesheet" href="css/style.css">
+<body>
+
+    <%-include("header.ejs")-%>
+    
+    <div class="box" id="heading">
+    <%if(locals.listTitle){%>
+        <h1><%=listTitle%></h1>
+    <%}%>
+</div>
+    
+    <div class="box">
+   <% if(locals.list){
+        for(let i=0;i<list.length;i++){%>
+            <div class="items">
+                <label>
+                    <input type="checkbox">
+                    <p><%= list[i] %></p>
+                </label>
+
+            </div>
+            
+
+        <%}
+   }%>
+<form class="item" action="/" method="post" >
+    <input type="text" name="NewItem" placeholder="New Item" autocomplete="off">
+    <%if(listTitle==="work"){%>
+          <button type="submit" name="list" value="work">+</button>
+        <%}
+        else{%>
+          <button type="submit" name="list" >+</button>
+        <%}%>
+    
+</form>
+
+    </div>
+    <%-include("footer.ejs")-%>
+
+
+    
+</body>
+</html>
