@@ -40,7 +40,7 @@ async function itemInsert(){
 }
 }
 //itemInsert();
-const items=["buy a new bf","buy a new clg","die"];
+//const items=["buy a new bf","buy a new clg","die"];
 const workItems = [];
 
 
@@ -49,7 +49,6 @@ app.get("/",async(req,res)=>{
    
 try{
        const items=await Item.find({});
-        console.log(items);
         if(items.length===0){
             itemInsert();res.redirect("/");
 
@@ -64,43 +63,47 @@ try{
     
 
 });
+
+
+
+
 app.get("/work", (req,res)=>{
     res.render("list.ejs", {listTitle: "work", list: workItems});
-  });
+});
+
+
+
+app.post("/delete",async(req,res)=>{
+    try{const checkitemID=req.body.checkbox;
+    await Item.findOneAndRemove({_id:checkitemID})
+       console.log("successfully removed");
+            res.redirect("/");
+       
+    }
+    catch(err){
+        console.error(err);
+    }
+})
+
 app.post("/", async (req, res) => {
     const newItem = req.body.NewItem;
     const listTitle = req.body.list;
 
     try {
         if (listTitle === "work") {
-            // Handle work items differently
-            // ...
+            workItems.push(newItem);
+            res.redirect("/work");
+            
         } else {
             const item = new Item({ name: newItem });
             await item.save();
+            res.redirect("/");
         }
-        res.redirect("/");
+       
     } catch (err) {
         console.log(err);
     }
 });
-//app.post("/",(req,res)=>{
-    //const newItem=req.body.NewItem;
-    //if(req.body.list==="work"){
-      //  workItems.push(newItem);
-      //  res.redirect("/work");
-    //}
-    //else{items.push(newItem);
-   // res.redirect("/");}
-   
-    //console.log(newItem);
-    //const iteme=new Item({
-        //name:newItem,
-   // });
-   // iteme.save();
-    //res.redirect("/");
-
-//})
 
   
 
