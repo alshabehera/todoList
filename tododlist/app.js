@@ -41,7 +41,7 @@ async function itemInsert(){
 }
 //itemInsert();
 //const items=["buy a new bf","buy a new clg","die"];
-const workItems = [];
+//const workItems = [];
 
 
 
@@ -91,8 +91,8 @@ app.post("/", async (req, res) => {
 
     try {
         if (listTitle === "work") {
-            workItems.push(newItem);
-            res.redirect("/work");
+            //workItems.push(newItem);
+            //res.redirect("/work");
             
         } else {
             const item = new Item({ name: newItem });
