@@ -11,7 +11,7 @@
     <%-include("header.ejs")-%>
     
     <div class="box" id="heading">
-    <%if(locals.listTitle){%>
+    <%if(listTitle){%>
         <h1><%=listTitle%></h1>
     <%}%>
 </div>
@@ -38,12 +38,10 @@
   <%}%>
 <form class="item" action="/" method="post" >
     <input type="text" name="NewItem" placeholder="New Item" autocomplete="off">
-    <%if(listTitle==="work"){%>
-          <button type="submit" name="list" value="work">+</button>
-        <%}
-        else{%>
+      
+      
           <button type="submit" name="list" >+</button>
-        <%}%>
+     
     
 </form>
 

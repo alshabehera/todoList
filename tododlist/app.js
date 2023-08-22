@@ -28,20 +28,22 @@ const item3=new Item({
     name:"<---hit to delete this item",
 })
 
+const listSchema=new mongoose.Schema({
+    name:String,
+    item:[itemSchema]
 
-
+});
+const List= mongoose.model("List",listSchema)
+const defaultItem=[item1,item2,item3];
 async function itemInsert(){
- try{await Item.insertMany([item1,item2,item3]);
+ try{await Item.insertMany(defaultItem);
  console.log("Successfully insert");
 }catch(err){
     console.log(err);
-}finally{
-    mongoose.disconnect();
-}
-}
+
+}}
 //itemInsert();
-//const items=["buy a new bf","buy a new clg","die"];
-//const workItems = [];
+
 
 
 
@@ -66,10 +68,30 @@ try{
 
 
 
+app.get("/:customListName",async(req,res)=>{
+   try{const customListName= req.params.customListName;
+   const foundItem=await List.findOne({name:customListName})
+        if(!foundItem){
+            const list=new List({
+            name:customListName,
+            item: defaultItem
+           });   await list.save();
+           res.redirect("/"+customListName);
+            
+        }
+        else {
+            console.log("Found Item:", foundItem);
+            res.render("list",{listTitle:foundItem.name,list:foundItem.item});
+        }
+    
+   }
+   catch(err){
+    console.error(err);
+   }
+   
+}
+);
 
-app.get("/work", (req,res)=>{
-    res.render("list.ejs", {listTitle: "work", list: workItems});
-});
 
 
 
