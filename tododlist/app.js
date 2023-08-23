@@ -76,6 +76,7 @@ app.get("/:customListName",async(req,res)=>{
             name:customListName,
             item: defaultItem
            });   await list.save();
+           console.log("created");
            res.redirect("/"+customListName);
             
         }
@@ -97,9 +98,23 @@ app.get("/:customListName",async(req,res)=>{
 
 app.post("/delete",async(req,res)=>{
     try{const checkitemID=req.body.checkbox;
-    await Item.findOneAndRemove({_id:checkitemID})
-       console.log("successfully removed");
-            res.redirect("/");
+        const listName=req.body.ClistName;
+        console.log(req.body.ClistName);
+        if(listName=="today"){
+            await Item.findOneAndRemove({_id:checkitemID})
+            console.log("successfully removed");
+                 res.redirect("/");
+        }
+        else{//i will find that list and updated it
+            const found2=await List.findOneAndUpdate({name:listName},{$pull:{item:{_id:checkitemID}}});
+            if(found2){
+                res.redirect("/"+listName);
+            }
+            else{ res.redirect("/");
+
+            }
+        }
+   
        
     }
     catch(err){
@@ -110,17 +125,25 @@ app.post("/delete",async(req,res)=>{
 app.post("/", async (req, res) => {
     const newItem = req.body.NewItem;
     const listTitle = req.body.list;
-
+    const items = new Item({ name: newItem });
     try {
-        if (listTitle === "work") {
-            //workItems.push(newItem);
-            //res.redirect("/work");
+        if (listTitle === "today") {
+            await items.save();
+            res.redirect("/");
+
             
         } else {
-            const item = new Item({ name: newItem });
-            await item.save();
-            res.redirect("/");
+            const found = await List.findOne({ name: listTitle });
+            if (found) {
+                found.item.push(items);
+                await found.save();
+                res.redirect("/" + listTitle);
+            } else {
+                console.log("List not found:", listTitle);
+                res.redirect("/");
+            }
         }
+        
        
     } catch (err) {
         console.log(err);
